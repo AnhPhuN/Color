@@ -133,13 +133,7 @@ def index():
 
         confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
-        time.sleep(1.5)
-
-        try:
-            finalconfirm = driver.find_element(By.XPATH, "//*[text()='You've activated your kit!']")
-        except:
-            return render_template("message.html", title = "Unable to Complete Form", message = "Please try again")
-        return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :)")
+        return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :) Please make sure to confirm the activation email from Color arrives.")
  
     else:
         return render_template("index.html")
