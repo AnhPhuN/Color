@@ -133,6 +133,8 @@ def index():
 
         confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
+        time.sleep(1.5)
+
         try:
             finalconfirm = driver.find_element(By.XPATH, "//*[text()='You've activated your kit!']")
         except:
