@@ -29,15 +29,15 @@ def index():
 
         if not barcode.isdigit() or not accession.isdigit():
             print("must be only digits.")
-            return render_template("apology.html", error_message = "must be only digits")
+            return render_template("message.html", title = "Input Error", message = "must be only digits")
 
         if len(str(barcode)) != 10:
             print("barcode must be 10 digits long")
-            return render_template("apology.html", error_message = "must be 10 digits long")  
+            return render_template("message.html", title = "Input Error", message = "must be 10 digits long")  
 
         if len(str(accession)) != 5:
             print("accession must be 5 digits long")
-            return render_template("apology.html", error_message = "must be 5 digits long")
+            return render_template("message.html", title = "Input Error", message = "must be 5 digits long")
 
 
 
@@ -129,8 +129,10 @@ def index():
 
         confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
-           
-        return render_template("finished.html")
+        finalconfirm = driver.find_element(By.XPATH, "//*[text()='You've activated your kit!']")
+        if not finalconfirm:
+            return render_template("message.html", title = "Unable to Complete Form", message = "Please try again")
+        return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :)")
  
     else:
         return render_template("index.html")
