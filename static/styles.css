@@ -1,0 +1,19 @@
+.btn-primary {
+    border: none;
+    margin: 50px auto;
+    display: block;
+
+  }
+
+.title {
+  color: black;
+  font-size: 130;
+  display: block;
+  text-align: center;
+}
+.error {
+  color: black;
+  font-size: 80;
+  display: block;
+  text-align: center;
+}
