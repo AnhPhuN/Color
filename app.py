@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, request
 import os
-
+# 2760476370
+# 76344
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,10 +14,8 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        email = "anhphunguyen5@gmail.com"
-        password = "mirqo7-vyxreg-haHrut"
-        # email = request.form.get("username")
-        # password = request.form.get("password")
+        email = request.form.get("username")
+        password = request.form.get("password")
         barcode = request.form.get("barcode")
         accession = request.form.get("accession")
 
