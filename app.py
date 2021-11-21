@@ -2,6 +2,11 @@ from flask import Flask, redirect, render_template, request
 import os
 # 2760476370
 # 76344
+
+# $ git add .
+# $ git commit -am "make it better"
+# $ git push heroku master
+
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
