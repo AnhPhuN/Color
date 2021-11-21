@@ -130,8 +130,8 @@ def index():
 
         confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
-            
-        return redirect("/")
+           
+        return render_template("finished.html")
  
     else:
         return render_template("index.html")
