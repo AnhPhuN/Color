@@ -1,7 +1,6 @@
 from flask import Flask, redirect, render_template, request
 import os
-# 2760476370
-# 76344
+
 
 # $ git add .
 # $ git commit -am "make it better"
@@ -13,7 +12,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# mirqo7-vyxreg-haHrut
 
 # Configure application
 app = Flask(__name__)

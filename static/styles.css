@@ -2,6 +2,7 @@
     border: none;
     margin: 50px auto;
     display: block;
+    background-color:cadetblue;
 
   }
 
@@ -9,6 +10,9 @@
   font-size: 130;
   display: block;
   text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
 }
 .error {
   font-size: 80;

@@ -13,16 +13,16 @@
         <div>
             <form action="/" method="POST">
                 <div class="mb-3">
-                    <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+                    <input required autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
                 </div>
                 <div class="mb-3">
-                    <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+                    <input required class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
                 </div>
                 <div class="mb-3">
-                    <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="barcode" name="barcode" placeholder="Barcode (10 digits)" type="number">
+                    <input pattern=".{10,10}" required autocomplete="off" autofocus class="form-control mx-auto w-auto" id="barcode" name="barcode" placeholder="Barcode (10 digits)" type="number" minlength="10">
                 </div>
                 <div class="mb-3">
-                    <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="accession" name="accession" placeholder="Accession (5 digits)" type="number">
+                    <input pattern=".{5,5}" required autocomplete="off" autofocus class="form-control mx-auto w-auto" id="accession" name="accession" placeholder="Accession (5 digits)" type="number" minlength="5">
                 </div>
                 <div>
                     <button class="btn btn-primary" type="submit">Submit</button>
