@@ -89,6 +89,7 @@ def index():
         time.sleep(1.5)
 
 
+
         activate = driver.find_element(By.CLASS_NAME, "MuiButton-root").click()
 
         time.sleep(1.5)
