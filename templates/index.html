@@ -28,12 +28,20 @@
                     <button class="btn btn-primary" type="submit">Submit</button>
                 </div>
                 <div>
-                    <p class="error">Tired of spending 2 minutes everytime you fill out a Color COVID test? this tool does it automatically for you in under 10 seconds.</p>
+                    <p id="loading_message" class="tip"></p>
+                </div>
+                <div>
+                    <p class="tip">Tired of spending 2 minutes everytime you fill out a Color COVID test? this tool does it automatically for you in under 10 seconds.</p>
                 </div>
                 <div>
                     <p class="tip">Tips are appreciated!! Venmo @anhphunguyen5</p>
                 </div>
             </form>
+            <script>
+                document.querySelector('form').addEventListener('submit', function(event) {
+                    document.querySelector('#loading_message').innerHTML = 'Loading...'
+                });
+            </script>
         </div>
 
     </body>
