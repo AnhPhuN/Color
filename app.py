@@ -1,16 +1,16 @@
 from flask import Flask, redirect, render_template, request
 import os
-
+import re
 
 # $ git add .
 # $ git commit -am "make it better"
 # $ git push heroku master
 
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 # Configure application
@@ -19,7 +19,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        email = request.form.get("username")
+        email = request.form.get("email")
         password = request.form.get("password")
         barcode = request.form.get("barcode")
         accession = request.form.get("accession")
@@ -40,15 +40,17 @@ def index():
 
         if len(str(barcode)) != 10:
             print("barcode must be 10 digits long")
-            return render_template("message.html", title = "Input Error", message = "must be 10 digits long")  
+            return render_template("message.html", title = "Input Error", message = "barcode must be 10 digits long")  
 
         if len(str(accession)) != 5:
             print("accession must be 5 digits long")
-            return render_template("message.html", title = "Input Error", message = "must be 5 digits long")
+            return render_template("message.html", title = "Input Error", message = "accession must be 5 digits long")
 
-
-
-        # create webdriver object
+        #check email validity
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        if not (re.fullmatch(regex, email)):
+            print("email error")
+            return render_template("message.html", title = "Input Error", message = "email is invalid")
 
 
         # get website
@@ -57,9 +59,9 @@ def index():
                 EC.presence_of_element_located((By.ID, "onetrust-accept-btn-handler"))
             )
 
-        cookie = driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
+        driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
 
-        button = driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
+        driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
 
         element = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "password-id"))
@@ -80,20 +82,27 @@ def index():
         password1.send_keys(password)
 
         #sign in
-        button = driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
+        driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
 
-        time.sleep(2)
+        try: 
+            element = WebDriverWait(driver, 4).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "MuiButton-outlinedPrimary")))
+        except TimeoutException:
+            return render_template("message.html", title = "Sign In Error", message = "Could not sign into Color. Please try again and check your email and password")
+        print("HERE")
+        person = driver.find_element(By.CLASS_NAME, "MuiButton-outlinedPrimary").click()
 
-        person = driver.find_element(By.CLASS_NAME, "MuiButton-root").click()
 
-        time.sleep(1.5)
+        element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "MuiButton-containedPrimary"))
+        )
 
+        activate = driver.find_element(By.CLASS_NAME, "MuiButton-containedPrimary").click()
 
-
-        activate = driver.find_element(By.CLASS_NAME, "MuiButton-root").click()
-
-        time.sleep(1.5)
-
+        element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[text()='Start Survey']"))
+        )
+        
         startsurvey = driver.find_element(By.CLASS_NAME, "MuiButton-root").click()
 
         element = WebDriverWait(driver, 10).until(
@@ -106,7 +115,8 @@ def index():
 
 
         #checkmarks:
-        time.sleep(1.5)
+        element = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "additionalConsents[2]-id")))
 
         check2 = driver.find_elements(By.XPATH, "//*[@type='checkbox']")
         for i in range(4):
