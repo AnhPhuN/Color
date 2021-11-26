@@ -147,7 +147,14 @@ def index():
 
         confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
-        return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :) Please make sure to confirm the activation email from Color arrives.")
  
+
+        try: 
+            element = WebDriverWait(driver, 4).until(
+                    EC.presence_of_element_located((By.XPATH, "//*[text()='kit is activated']")))
+        except TimeoutException:
+            return render_template("message.html", title = "Barcode/Accession Invalid", message = "Your Barcode or Accession Number is incorrect. Please retry the form and check your values are correct.")
+        return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :) Please make sure to confirm the activation email from Color arrives.")
+
     else:
         return render_template("index.html")
