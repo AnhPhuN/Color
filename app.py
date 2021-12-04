@@ -150,7 +150,8 @@ def index():
 
         try: 
             element = WebDriverWait(driver, 4).until(
-                    EC.presence_of_element_located((By.XPATH, "//*[text()='You've activated your kit! Now, collect a sample.']")))
+                    EC.presence_of_element_located(By.ID, "onetrust-consent-sdk"))
+            print("HERE")
         except TimeoutException:
             return render_template("message.html", title = "Barcode/Accession Invalid", message = "Your \
             Barcode or Accession Number is incorrect. Please retry the form and check your values are correct.")
