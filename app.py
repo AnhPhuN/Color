@@ -32,7 +32,7 @@ def index():
         image = Image.open(fileupload)
 
         if filename != '':
-            image.save(filename, optimize=True, quality=60)
+            image.save(filename, optimize=True, quality=85)
 
         
 
