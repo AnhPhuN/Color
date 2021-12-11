@@ -35,7 +35,7 @@ def index():
         image = Image.open(fileupload)
 
         if filename != '':
-            image.save(filename, optimize=True, quality=97)
+            image.save(filename, optimize=True, quality=50)
 
         print("here")
 
@@ -53,9 +53,8 @@ def index():
                                 )
         print('here2')
         # remove file
-        os.remove(filename)
+        # os.remove(filename)
         m = r.content.decode()
-
         # get json from OCR
         jsonstr = json.loads(m)
         # get barcode and accession 
