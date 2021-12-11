@@ -1,15 +1,22 @@
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+
 from flask import Flask, render_template, request
+import requests
+import json
 import re
+
+
 
 # $ git add .
 # $ git commit -am "make it better"
 # $ git push heroku master
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+
+
 
 
 # Configure application
@@ -20,8 +27,45 @@ def index():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        barcode = request.form.get("barcode")
-        accession = request.form.get("accession")
+        # barcode = request.form.get("barcode")
+        # accession = request.form.get("accession")
+
+        fileupload = request.files['file']
+        if fileupload.filename != '':
+            fileupload.save(fileupload.filename)
+        filename = fileupload.filename
+        payload = {'isOverlayRequired': True,
+        'apikey': 'e080d39d5d88957',
+        'language': 'eng',
+        'OCREngine': 2,
+        }
+        with open(filename, 'rb') as f:
+            r = requests.post('https://api.ocr.space/parse/image',
+                                files={filename: f},
+                                data=payload,
+                                )
+        m = r.content.decode()
+        # get json from OCR
+        jsonstr = json.loads(m)
+
+        # get barcode and accession 
+        text = jsonstr["ParsedResults"][0]["ParsedText"]
+
+        posacc = text.find('C-')
+        posbar = text.find('D-')
+
+        accession = text[posacc + 2:posacc + 7]
+        barcode = text[posbar + 2:posbar + 12]
+        try:
+            int(accession)
+        except:
+            return render_template("message.html", title = "Image Error", message = "Accession number could not successfully be found. Please try again with new picture.")
+        try:
+            int(barcode)
+        except:
+            return render_template("message.html", title = "Image Error", message = "Barcode number could not successfully be found. Please try again with new picture.")
+
+
         
         driver = webdriver.Chrome()
         
@@ -152,8 +196,8 @@ def index():
             element = WebDriverWait(driver, 4).until(
                     EC.presence_of_element_located((By.XPATH, "//*[text()='You’ve activated your kit! Now, collect a sample.']")))
         except TimeoutException:
-            return render_template("message.html", title = "Barcode/Accession Invalid", message = "Your \
-            Barcode or Accession Number is incorrect. Please retry the form and check your values are correct.")
+            message = "Your Barcode: {} or Accession Number: {} is incorrect. Please retry the form and check your values are correct.".format(barcode, accession)
+            return render_template("message.html", title = "Barcode/Accession Invalid", message = message)
 
         return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :) Please make sure to confirm the activation email from Color arrives.")
 

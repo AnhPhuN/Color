@@ -11,32 +11,38 @@
     <body>
         <h1 class="title">AnhPhu's Auto Color COVID Form</h1>
         <div>
-            <form action="/" method="POST">
+
+            <div>
+                <p class="tip">Tired of spending 2 minutes everytime you fill out a Color COVID test? this tool does it automatically for you in under 10 seconds.</p>
+            </div>
+            <div>
+                <p class="tip">Tips are appreciated!! Venmo @anhphunguyen5</p>
+            </div>
+            <br>
+            <div>
+                <p id="loading_message" class="loading_message tip"></p>
+            </div>
+            <form action="/" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
+                    <p class="tip">Color Account:</p>
                     <input required autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text">
                 </div>
                 <div class="mb-3">
                     <input required class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
                 </div>
-                <div class="mb-3">
-                    <input pattern=".{10,10}" required autocomplete="off" autofocus class="form-control mx-auto w-auto" id="barcode" name="barcode" placeholder="Barcode (10 digits)" type="number" minlength="10">
-                </div>
-                <div class="mb-3">
-                    <input pattern=".{5,5}" required autocomplete="off" autofocus class="form-control mx-auto w-auto" id="accession" name="accession" placeholder="Accession (5 digits)" type="number" minlength="5">
+                <div>
+                    <p class="tip">COVID test picture:</p>
+                    <input required class="form-control mx-auto w-auto" type="file" id="file" name="file">
                 </div>
                 <div>
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                </div>
-                <div>
-                    <p id="loading_message" class="tip"></p>
-                </div>
-                <div>
-                    <p class="tip">Tired of spending 2 minutes everytime you fill out a Color COVID test? this tool does it automatically for you in under 10 seconds.</p>
-                </div>
-                <div>
-                    <p class="tip">Tips are appreciated!! Venmo @anhphunguyen5</p>
+                    <button class="btn btn-primary btn-lg" type="submit">Submit</button>
                 </div>
             </form>
+            <hr>
+            <p class="title">Take a picture of your COVID test with the numbers clearly shown like this:</p>
+            <img class="img img-fluid" src="static/example.jpeg" alt="example image">
+            <br> <hr> <br> <br> <br> <br>
+            <footer class="tip">DISCLAIMER: Only use this if you are completely healthy and have no symptoms! If you do have symptoms, go through the form like normal.</footer>
             <script>
                 document.querySelector('form').addEventListener('submit', function(event) {
                     document.querySelector('#loading_message').innerHTML = 'Loading...'
