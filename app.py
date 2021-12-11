@@ -5,18 +5,15 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 
 from flask import Flask, render_template, request
+import os
 import requests
 import json
 import re
-
-
+from PIL import Image
 
 # $ git add .
 # $ git commit -am "make it better"
 # $ git push heroku master
-
-
-
 
 
 # Configure application
@@ -31,9 +28,14 @@ def index():
         # accession = request.form.get("accession")
 
         fileupload = request.files['file']
-        if fileupload.filename != '':
-            fileupload.save(fileupload.filename)
         filename = fileupload.filename
+        image = Image.open(fileupload)
+
+        if filename != '':
+            image.save(filename, optimize=True, quality=60)
+
+        
+
         payload = {'isOverlayRequired': True,
         'apikey': 'e080d39d5d88957',
         'language': 'eng',
@@ -44,10 +46,12 @@ def index():
                                 files={filename: f},
                                 data=payload,
                                 )
+        # remove file
+        os.remove(filename)
         m = r.content.decode()
+
         # get json from OCR
         jsonstr = json.loads(m)
-
         # get barcode and accession 
         text = jsonstr["ParsedResults"][0]["ParsedText"]
 
