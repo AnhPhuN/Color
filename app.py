@@ -15,6 +15,8 @@ from PIL import Image
 # $ git add .
 # $ git commit -am "make it better"
 # $ git push heroku master
+# $ heroku git:clone -a anhphu
+
 
 
 # Configure application
@@ -31,12 +33,11 @@ def index():
         fileupload = request.files['file']
         filename = fileupload.filename
 
-
         image = Image.open(fileupload)
 
         if filename != '':
-            image.save(filename, optimize=True, quality=50)
-
+            image.save("static/" + filename, optimize=True, quality=50)
+        return render_template("pic.html", pic = "static/" + filename)
         print("here")
 
         payload = {'isOverlayRequired': True,
@@ -53,7 +54,7 @@ def index():
                                 )
         print('here2')
         # remove file
-        # os.remove(filename)
+        os.remove(filename)
         m = r.content.decode()
         # get json from OCR
         jsonstr = json.loads(m)
