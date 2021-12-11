@@ -11,6 +11,7 @@ import json
 import re
 from PIL import Image
 
+
 # $ git add .
 # $ git commit -am "make it better"
 # $ git push heroku master
@@ -29,23 +30,28 @@ def index():
 
         fileupload = request.files['file']
         filename = fileupload.filename
+
+
         image = Image.open(fileupload)
 
         if filename != '':
-            image.save(filename, optimize=True, quality=30)
+            image.save(filename, optimize=True, quality=97)
 
-        
+        print("here")
 
         payload = {'isOverlayRequired': True,
         'apikey': 'e080d39d5d88957',
         'language': 'eng',
         'OCREngine': 2,
         }
+        print('here1')
+
         with open(filename, 'rb') as f:
             r = requests.post('https://api.ocr.space/parse/image',
                                 files={filename: f},
                                 data=payload,
                                 )
+        print('here2')
         # remove file
         os.remove(filename)
         m = r.content.decode()
@@ -54,12 +60,12 @@ def index():
         jsonstr = json.loads(m)
         # get barcode and accession 
         text = jsonstr["ParsedResults"][0]["ParsedText"]
-
         posacc = text.find('C-')
         posbar = text.find('D-')
 
         accession = text[posacc + 2:posacc + 7]
         barcode = text[posbar + 2:posbar + 12]
+
         try:
             int(accession)
         except:
