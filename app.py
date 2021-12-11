@@ -10,6 +10,7 @@ import requests
 import json
 import re
 from PIL import Image
+import pyheif
 
 
 # $ git add .
@@ -31,13 +32,33 @@ def index():
         # accession = request.form.get("accession")
 
         fileupload = request.files['file']
-        filename = fileupload.filename
+        fileuploadname = fileupload.filename
 
-        image = Image.open(fileupload)
+        # check if HEIC or JPEG
+        if fileuploadname.endswith(".HEIC") or fileuploadname.endswith(".HEIF"):
 
-        if filename != '':
-            image.save("static/" + filename, optimize=True, quality=50)
-        return render_template("pic.html", pic = "static/" + filename)
+            filename = "file.jpeg"
+            
+
+
+            heif_file = pyheif.read(fileupload)
+            image = Image.frombytes(
+                heif_file.mode, 
+                heif_file.size, 
+                heif_file.data,
+                "raw",
+                heif_file.mode,
+                heif_file.stride,
+                )
+            image.save("file.jpeg", format="JPEG")
+        else:
+            filename = fileupload.filename
+            image = Image.open(fileupload)
+            if filename != '':
+                image.save(filename, optimize=True, quality=50)
+
+
+
         print("here")
 
         payload = {'isOverlayRequired': True,
