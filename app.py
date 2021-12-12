@@ -50,7 +50,7 @@ def index():
                 heif_file.mode,
                 heif_file.stride,
                 )
-            image.save(filename, format="JPEG")
+            image.save(filename, format="JPEG", optimize=True, quality=50)
         else:
             filename = fileupload.filename
             image = Image.open(fileupload)
