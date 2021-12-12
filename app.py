@@ -28,14 +28,14 @@ def index():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
+        fileupload = request.files['file']
+
         # barcode = request.form.get("barcode")
         # accession = request.form.get("accession")
-
-        fileupload = request.files['file']
         fileuploadname = fileupload.filename
 
         # check if HEIC or JPEG
-        if fileuploadname.endswith(".HEIC") or fileuploadname.endswith(".HEIF"):
+        if fileuploadname.endswith(".HEIC") or fileuploadname.endswith(".heic"):
 
             filename = "file.jpeg"
             
@@ -50,42 +50,65 @@ def index():
                 heif_file.mode,
                 heif_file.stride,
                 )
-            image.save("file.jpeg", format="JPEG")
+            image.save(filename, format="JPEG")
         else:
             filename = fileupload.filename
             image = Image.open(fileupload)
             if filename != '':
                 image.save(filename, optimize=True, quality=50)
 
+        #filehandler function takes in the name of an image file, and returns the barcode and accession number
+        def filehandler(filename):
 
+            print("here")
 
-        print("here")
+            payload = {'isOverlayRequired': True,
+            'apikey': 'e080d39d5d88957',
+            'language': 'eng',
+            'OCREngine': 2,
+            }
+            print('here1')
 
-        payload = {'isOverlayRequired': True,
-        'apikey': 'e080d39d5d88957',
-        'language': 'eng',
-        'OCREngine': 2,
-        }
-        print('here1')
+            with open(filename, 'rb') as f:
+                r = requests.post('https://api.ocr.space/parse/image',
+                                    files={filename: f},
+                                    data=payload,
+                                    )
+            print('here2')
+            m = r.content.decode()
+            # get json from OCR
+            jsonstr = json.loads(m)
+            # get barcode and accession 
+            try:
+                text = jsonstr["ParsedResults"][0]["ParsedText"]
+                posacc = text.find('C-')
+                posbar = text.find('D-')
+                print(posbar, posacc)
+                print("hello")
+                print(text)
+                if posbar == -1 or posacc == -1:
+                    rotated = image.rotate(270)
+                    rotated.save(filename)
+                    print("BRUH1")
+                    text = filehandler(filename)
+                return text
+            except:
+                return render_template("message.html", title = "OCR error", message = "OCR API did not return text. please try again or try again later.")
 
-        with open(filename, 'rb') as f:
-            r = requests.post('https://api.ocr.space/parse/image',
-                                files={filename: f},
-                                data=payload,
-                                )
-        print('here2')
+        text = filehandler(filename)
         # remove file
         os.remove(filename)
-        m = r.content.decode()
-        # get json from OCR
-        jsonstr = json.loads(m)
-        # get barcode and accession 
-        text = jsonstr["ParsedResults"][0]["ParsedText"]
+        print("HU", text, "HU")
+
         posacc = text.find('C-')
         posbar = text.find('D-')
+        if posbar == -1 or posacc == -1:
+            return render_template("message.html", title = "Image Error", message = "Accession number or Barcode could not successfully be found. Please try again with new picture.")
+        print(posacc, "HUU", posbar )
 
         accession = text[posacc + 2:posacc + 7]
         barcode = text[posbar + 2:posbar + 12]
+        print(accession, barcode, "HE")
 
         try:
             int(accession)
