@@ -32,11 +32,17 @@
                 </div>
                 <div>
                     <p class="tip">COVID test picture:</p>
-                    <input required class="form-control mx-auto w-auto" type="file" id="file" name="file">
+                    <input class="form-control mx-auto w-auto" type="file" id="file" name="file">
                 </div>
+                <br>
                 <div>
                     <p class="tip">Or manually input your barcode & accession:</p>
-                    
+                    <div class="mb-3">
+                        <input pattern=".{10,10}" autocomplete="off" autofocus class="form-control mx-auto w-auto" id="barcode" name="barcode" placeholder="Barcode (10 digits)" type="number">
+                    </div>
+                    <div class="mb-3">
+                        <input pattern=".{5,5}" autocomplete="off" autofocus class="form-control mx-auto w-auto" id="accession" name="accession" placeholder="Accession (5 digits)" type="number">
+                    </div>
                 </div>
                 <div>
                     <button class="btn btn-primary btn-lg" type="submit">Submit</button>
