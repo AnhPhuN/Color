@@ -111,6 +111,8 @@ def index():
             except:
                 return render_template("message.html", title = "Image Error", message = "Barcode number could not successfully be found. Please try again with new picture.")
             return barcode, accession
+
+        # check if fileupload was submitted. takes precedence over manual input
         if fileupload.filename != '':
             baracc = filesubmitted()
             barcode = baracc[0]
