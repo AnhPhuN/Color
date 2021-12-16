@@ -93,7 +93,7 @@ def index():
             posacc = text.find('C-')
             posbar = text.find('D-')
             if posbar == -1 or posacc == -1:
-                return render_template("message.html", title = "Image Error", message = "Accession number or Barcode could not successfully be found. Please try again with new picture.")
+                return render_template("message.html", title = "Image Error", message = "Accession number or Barcode could not successfully be found. Please try again with new picture. \n OCR could be down, try inputting values manually")
 
             accession = text[posacc + 2:posacc + 7]
             barcode = text[posbar + 2:posbar + 12]
