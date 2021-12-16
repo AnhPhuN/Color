@@ -31,16 +31,12 @@ def index():
         fileupload = request.files['file']
 
         def filesubmitted():
-
-
             fileuploadname = fileupload.filename
 
             # check if HEIC or JPEG
             if fileuploadname.endswith(".HEIC") or fileuploadname.endswith(".heic"):
 
                 filename = "file.jpeg"
-                
-
 
                 heif_file = pyheif.read(fileupload)
                 image = Image.frombytes(
