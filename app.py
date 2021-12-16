@@ -177,7 +177,7 @@ def index():
 
         #sign in
         driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
-
+        print("HERE2")
         try: 
             element = WebDriverWait(driver, 4).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "MuiButton-outlinedPrimary")))
@@ -185,6 +185,11 @@ def index():
             return render_template("message.html", title = "Sign In Error", message = "Could not sign into Color. Please try again and check your email and password")
         person = driver.find_element(By.CLASS_NAME, "MuiButton-outlinedPrimary").click()
 
+        print("HERE1")
+        element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[text()='Harvard']"))
+        )
+        program = driver.find_element(By.XPATH, "//*[text()='Harvard']").click()
 
         element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, "MuiButton-containedPrimary"))
@@ -195,7 +200,7 @@ def index():
         element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//*[text()='Start Survey']"))
         )
-        
+        print("HERE")
         startsurvey = driver.find_element(By.CLASS_NAME, "MuiButton-root").click()
 
         element = WebDriverWait(driver, 10).until(
