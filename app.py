@@ -205,7 +205,7 @@ def index():
 
         no = driver.find_element(By.XPATH, "//*[@data-testid='No']").click()
 
-        submit = driver.find_element(By.XPATH, "//*[@data-testid='NextButton']").click()
+        submit = driver.find_element(By.XPATH, "//*[@data-testid='SubmitQuizAnswerButton']").click()
 
 
         #checkmarks:
