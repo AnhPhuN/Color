@@ -11,6 +11,7 @@ import json
 import re
 from PIL import Image
 import pyheif
+import time
 
 
 # $ git add .
@@ -29,104 +30,110 @@ def index():
         email = request.form.get("email")
         password = request.form.get("password")
         fileupload = request.files['file']
+        fileupload.save("file11.JPEG")
 
-        def filesubmitted():
-            fileuploadname = fileupload.filename
+                                            # def filesubmitted():
+                                            #     fileuploadname = fileupload.filename
 
-            # check if HEIC or JPEG
-            if fileuploadname.endswith(".HEIC") or fileuploadname.endswith(".heic"):
+                                            #     # check if HEIC or JPEG
+                                            #     if fileuploadname.endswith(".HEIC") or fileuploadname.endswith(".heic"):
 
-                filename = "file.jpeg"
+                                            #         filename = "file.jpeg"
 
-                heif_file = pyheif.read(fileupload)
-                image = Image.frombytes(
-                    heif_file.mode, 
-                    heif_file.size, 
-                    heif_file.data,
-                    "raw",
-                    heif_file.mode,
-                    heif_file.stride,
-                    )
-                image.save(filename, format="JPEG", optimize=True, quality=50)
-            else:
-                filename = fileupload.filename
-                image = Image.open(fileupload)
-                if filename != '':
-                    image.save(filename, optimize=True, quality=50)
+                                            #         heif_file = pyheif.read(fileupload)
+                                            #         image = Image.frombytes(
+                                            #             heif_file.mode, 
+                                            #             heif_file.size, 
+                                            #             heif_file.data,
+                                            #             "raw",
+                                            #             heif_file.mode,
+                                            #             heif_file.stride,
+                                            #             )
+                                            #         image.save(filename, format="JPEG", optimize=True, quality=50)
+                                            #     else:
+                                            #         filename = fileupload.filename
+                                            #         image = Image.open(fileupload)
+                                            #         if filename != '':
+                                            #             image.save(filename, optimize=True, quality=50)
 
-            #filehandler function takes in the name of an image file, and returns the barcode and accession number
-            def filehandler(filename):
+                                            #     #filehandler function takes in the name of an image file, and returns the barcode and accession number
+                                            #     def filehandler(filename):
 
 
-                payload = {'isOverlayRequired': True,
-                'apikey': 'e080d39d5d88957',
-                'language': 'eng',
-                'OCREngine': 2,
-                }
+                                            #         payload = {'isOverlayRequired': True,
+                                            #         'apikey': 'e080d39d5d88957',
+                                            #         'language': 'eng',
+                                            #         'OCREngine': 2,
+                                            #         }
 
-                with open(filename, 'rb') as f:
-                    r = requests.post('https://api.ocr.space/parse/image',
-                                        files={filename: f},
-                                        data=payload,
-                                        )
-                m = r.content.decode()
-                # get json from OCR
-                jsonstr = json.loads(m)
-                # get barcode and accession 
-                try:
-                    text = jsonstr["ParsedResults"][0]["ParsedText"]
-                    posacc = text.find('C-')
-                    posbar = text.find('D-')
+                                            #         with open(filename, 'rb') as f:
+                                            #             r = requests.post('https://api.ocr.space/parse/image',
+                                            #                                 files={filename: f},
+                                            #                                 data=payload,
+                                            #                                 )
+                                            #         m = r.content.decode()
+                                            #         # get json from OCR
+                                            #         jsonstr = json.loads(m)
+                                            #         # get barcode and accession 
+                                            #         try:
+                                            #             text = jsonstr["ParsedResults"][0]["ParsedText"]
+                                            #             posacc = text.find('C-')
+                                            #             posbar = text.find('D-')
 
-                    if posbar == -1 or posacc == -1:
-                        rotated = image.rotate(270)
-                        rotated.save(filename)
-                        text = filehandler(filename)
-                    return text
-                except:
-                    return render_template("message.html", title = "OCR error", message = "OCR API did not return text. please try again or try again later.")
+                                            #             if posbar == -1 or posacc == -1:
+                                            #                 rotated = image.rotate(270)
+                                            #                 rotated.save(filename)
+                                            #                 text = filehandler(filename)
+                                            #             return text
+                                            #         except:
+                                            #             return render_template("message.html", title = "OCR error", message = "OCR API did not return text. please try again or try again later.")
 
-            text = filehandler(filename)
-            # remove file
-            os.remove(filename)
+                                            #     text = filehandler(filename)
+                                            #     # remove file
+                                            #     os.remove(filename)
 
-            posacc = text.find('C-')
-            posbar = text.find('D-')
-            if posbar == -1 or posacc == -1:
-                return render_template("message.html", title = "Image Error", message = "Accession number or Barcode could not successfully be found. Please try again with new picture. \n OCR could be down, try inputting values manually")
+                                            #     posacc = text.find('C-')
+                                            #     posbar = text.find('D-')
+                                            #     if posbar == -1 or posacc == -1:
+                                            #         return render_template("message.html", title = "Image Error", message = "Accession number or Barcode could not successfully be found. Please try again with new picture. \n OCR could be down, try inputting values manually")
 
-            accession = text[posacc + 2:posacc + 7]
-            barcode = text[posbar + 2:posbar + 12]
+                                            #     accession = text[posacc + 2:posacc + 7]
+                                            #     barcode = text[posbar + 2:posbar + 12]
 
-            try:
-                int(accession)
-            except:
-                return render_template("message.html", title = "Image Error", message = "Accession number could not successfully be found. Please try again with new picture.")
-            try:
-                int(barcode)
-            except:
-                return render_template("message.html", title = "Image Error", message = "Barcode number could not successfully be found. Please try again with new picture.")
-            return barcode, accession
+                                            #     try:
+                                            #         int(accession)
+                                            #     except:
+                                            #         return render_template("message.html", title = "Image Error", message = "Accession number could not successfully be found. Please try again with new picture.")
+                                            #     try:
+                                            #         int(barcode)
+                                            #     except:
+                                            #         return render_template("message.html", title = "Image Error", message = "Barcode number could not successfully be found. Please try again with new picture.")
+                                            #     return barcode, accession
+
+
 
         # check if fileupload was submitted. takes precedence over manual input
-        if fileupload.filename != '':
-            baracc = filesubmitted()
-            barcode = baracc[0]
-            accession = baracc[1]
-        else:
-            barcode = request.form.get("barcode")
-            accession = request.form.get("accession")
+        # if fileupload.filename != '':
+        #     baracc = filesubmitted()
+        #     barcode = baracc[0]
+        #     accession = baracc[1]
+        # else:
+        photo_uploaded = (fileupload.filename != "")
+        print(photo_uploaded)
+        barcode = request.form.get("barcode")
+        accession = request.form.get("accession")
         
 
+        if not photo_uploaded:
+            if not barcode or not accession:
+                return render_template("message.html", title = "Input Error", message = "Must upload an image or fill out barcode or accession")
 
-        if not barcode or not accession:
-            return render_template("message.html", title = "Input Error", message = "Must upload an image or fill out barcode or accession")
+            if len(str(barcode)) != 10:
+                return render_template("message.html", title = "Input Error", message = "barcode must be 10 digits long")  
 
-        if len(str(barcode)) != 10:
-            return render_template("message.html", title = "Input Error", message = "barcode must be 10 digits long")  
+            if len(str(accession)) != 5:
+                return render_template("message.html", title = "Input Error", message = "accession must be 5 digits long")
 
-        if len(str(accession)) != 5:
-            return render_template("message.html", title = "Input Error", message = "accession must be 5 digits long")
 
         #check email validity
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -170,17 +177,18 @@ def index():
 
         # send keys 
         password1.send_keys(password)
-
         #sign in
         driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
         print("HERE2")
+
+        time.sleep(3)
+
         try: 
             element = WebDriverWait(driver, 4).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "MuiButton-outlinedPrimary")))
         except TimeoutException:
             return render_template("message.html", title = "Sign In Error", message = "Could not sign into Color. Please try again and check your email and password")
         person = driver.find_element(By.CLASS_NAME, "MuiButton-outlinedPrimary").click()
-
         print("HERE1")
         element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//*[text()='Harvard']"))
@@ -192,7 +200,7 @@ def index():
         )
 
         activate = driver.find_element(By.CLASS_NAME, "MuiButton-containedPrimary").click()
-
+        
         element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//*[text()='Start Survey']"))
         )
@@ -228,20 +236,27 @@ def index():
 
         confirmcont = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
+        # upload a photo or send barcode
 
-        barcodehtml = driver.find_element(By.ID, "CovidBarcodeField")
-        barcodehtml.click()
-        barcodehtml.send_keys(barcode)
 
-        accessionhtml = driver.find_element(By.ID, "AccessionNumberField")
-        accessionhtml.click()
-        accessionhtml.send_keys(accession)
+        def send_kit_info():
+            if photo_uploaded:
+                upload_photo = driver.find_element(By.XPATH, "//*input[@type='file']")
+                upload_photo.send_keys("testimg.HEIC")
+            else:
+                barcodehtml = driver.find_element(By.ID, "CovidBarcodeField")
+                barcodehtml.click()
+                barcodehtml.send_keys(barcode)
 
-        submit3 = driver.find_element(By.XPATH, "//*[@data-testid='submit-sample-identifier-form-button']").click()
+                accessionhtml = driver.find_element(By.ID, "AccessionNumberField")
+                accessionhtml.click()
+                accessionhtml.send_keys(accession)
 
-        confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
+                submit3 = driver.find_element(By.XPATH, "//*[@data-testid='submit-sample-identifier-form-button']").click()
 
- 
+                confirm1 = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
+
+        send_kit_info()
 
         try: 
             element = WebDriverWait(driver, 4).until(
