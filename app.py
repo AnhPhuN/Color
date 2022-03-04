@@ -30,7 +30,7 @@ def index():
         email = request.form.get("email")
         password = request.form.get("password")
         fileupload = request.files['file']
-        fileupload.save("file11.JPEG")
+        fileupload.save(os.getcwd() + "/file11.JPEG")
 
                                             # def filesubmitted():
                                             #     fileuploadname = fileupload.filename
@@ -181,11 +181,9 @@ def index():
         driver.find_element(By.CLASS_NAME, "MuiButtonBase-root").click()
         print("HERE2")
 
-        time.sleep(3)
-
         try: 
             element = WebDriverWait(driver, 4).until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "MuiButton-outlinedPrimary")))
+                    EC.presence_of_element_located((By.CLASS_NAME, "jss283")))
         except TimeoutException:
             return render_template("message.html", title = "Sign In Error", message = "Could not sign into Color. Please try again and check your email and password")
         person = driver.find_element(By.CLASS_NAME, "MuiButton-outlinedPrimary").click()
@@ -237,12 +235,22 @@ def index():
         confirmcont = driver.find_element(By.XPATH, "//*[@data-testid='TwoButtonDialogPrimary']").click()
 
         # upload a photo or send barcode
-
+        time.sleep(3)
 
         def send_kit_info():
             if photo_uploaded:
-                upload_photo = driver.find_element(By.XPATH, "//*input[@type='file']")
-                upload_photo.send_keys("testimg.HEIC")
+                upload_photo_click = driver.find_element(By.XPATH, "//*[@id='root']/div/div/div[3]/div[2]/div/div[1]/form/div[3]/div/div/button").click()
+                print("heremoment")
+                upload_photo = driver.find_element(By.XPATH, "//*[@type='file']")
+                print("heremoment1")
+                upload_photo.send_keys(os.getcwd() + "/file11.jpeg")
+
+
+                element = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//*[text()='Confirm and Continue']"))
+                )
+                confirm_and_continue = driver.find_element(By.XPATH, "//*[text()='Confirm and Continue']").click()
+
             else:
                 barcodehtml = driver.find_element(By.ID, "CovidBarcodeField")
                 barcodehtml.click()
@@ -262,8 +270,13 @@ def index():
             element = WebDriverWait(driver, 4).until(
                     EC.presence_of_element_located((By.XPATH, "//*[text()='You’ve activated your kit! Now, collect a sample.']")))
         except TimeoutException:
-            message = "Your Barcode: {} or Accession Number: {} is incorrect. Please retry the form and check your values are correct.".format(barcode, accession)
-            return render_template("message.html", title = "Barcode/Accession Invalid", message = message)
+            if photo_uploaded:
+                title = "Barcode/Accession Invalid"
+                message = "Your picture failed to load on Color. Please try again with a new picture."
+            else: 
+                title = "Picture Failed to Load"
+                message = "Your Barcode: {} or Accession Number: {} is incorrect. Please retry the form and check your values are correct.".format(barcode, accession)
+            return render_template("message.html", title = title, message = message)
 
         return render_template("message.html", title = "Form Complete", message = "Your kit activation is all done! :) Please make sure to confirm the activation email from Color arrives.")
 
