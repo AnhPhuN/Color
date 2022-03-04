@@ -182,7 +182,7 @@ def index():
         print("HERE2")
 
         try: 
-            element = WebDriverWait(driver, 4).until(
+            element = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "jss283")))
         except TimeoutException:
             return render_template("message.html", title = "Sign In Error", message = "Could not sign into Color. Please try again and check your email and password")
