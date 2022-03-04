@@ -6,11 +6,11 @@ from selenium import webdriver
 
 from flask import Flask, render_template, request
 import os
-import requests
-import json
+# import requests
+# import json
 import re
-from PIL import Image
-import pyheif
+# from PIL import Image
+# import pyheif
 import time
 
 
